@@ -1,8 +1,5 @@
 ---
 
-
----
-
 <blockquote>
 <h1 id="srt210-assignment-1">SRT210 Assignment 1</h1>
 </blockquote>
