@@ -216,8 +216,8 @@ Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters
 New-NetFirewallRule -Name "Allow-ICMPv4-In" -DisplayName "Allow ICMPv4 Ping" -Protocol ICMPv4 -IcmpType 8 -Direction Inbound -Action Allow
 ```
 #### Step R‑5 – Reboot
-```
-powershell
+
+```powershell
 Restart-Computer
 ```
 After reboot, verify forwarding and test internet:
