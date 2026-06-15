@@ -24,8 +24,6 @@
 
 **Physical connections:**  
 - Relay ↔ Node: Realtek USB GbE Family Controller adapter connected by a physical CAT6 cable.  
-- Host‑only adapters (Adapter 4 on GW) used for SSH from the K1001 PC.
-
 ---
 
 ## 2. Windows Server 2022 Routing Lab
@@ -47,8 +45,6 @@
 |---------|------------------|-------------------------|---------------------------|
 | 1       | NAT              | -                       | internet out              |
 | 2       | Internal Network | `intnet`                | to Relay                  |
-| 3       | Disabled         | -                       | -                         |
-| 4       | Host‑Only Adapter| VirtualBox Host‑Only    | for SSH from K1001 PC    |
 
 #### windows‑Relay
 | Adapter | Attached to      | Name / Promiscuous      | Notes                         |
@@ -336,11 +332,11 @@ tracert 1.1.1.1      # Should show Relay → Gateway → 10.0.2.2 → ...
 
 ### 2.7 Lab 4 Firewall Strict Mode Verification
 
-**From school PC (host) – Host‑Only network `192.168.56.x`:**
+**From K1001 PC (host) – Bridged Adapter network `10.0.x.x`:**
 
--   `ping 192.168.56.x` → **timed out** (ICMP blocked by default).
+-   `ping 10.0.x.x` → **timed out** (ICMP blocked by default).
     
--   `ssh Administrator@192.168.56.x` → **successful login** (TCP/22 allowed).
+-   `ssh Administrator@10.0.x.x` → **successful login** (TCP/22 allowed).
     
 
 **From Node (`192.168.76.82`):**
@@ -369,8 +365,6 @@ Parallel topology with identical IP scheme (Y=76). Three VMs: `ubuntu-gw`, `ubun
 |---------|------------------|-------------------------|---------------------------|
 | 1       | NAT              | -                       | internet out              |
 | 2       | Internal Network | `intnet`                | to Relay                  |
-| 3       | Disabled         | -                       | -                         |
-| 4       | Host‑Only Adapter| VirtualBox Host‑Only    | for SSH from K1001 PC    |
 
 #### ubuntu‑Relay
 | Adapter | Attached to      | Name / Promiscuous      | Notes                         |
@@ -694,8 +688,8 @@ traceroute -n 1.1.1.1
 ### 1. Expected Behavior – Strict Firewall Mode
 | Source | Destination | Service / Protocol | Windows Result | Linux (UFW) Result |
 |----------------------------|------------------|--------------------|-----------------------|-----------------------|
-| School PC (`192.168.56.x`) | Gateway | ICMP (ping) | ❌ Blocked (timeout) | ❌ Blocked (timeout) |
-| School PC (`192.168.56.x`) | Gateway | SSH (TCP/22) | ✅ Allowed (login) | ✅ Allowed (login) |
+| School PC (`10.0.x.x`) | Gateway | ICMP (ping) | ❌ Blocked (timeout) | ❌ Blocked (timeout) |
+| School PC (`10.0.x.x`) | Gateway | SSH (TCP/22) | ✅ Allowed (login) | ✅ Allowed (login) |
 | Node (`192.168.76.82`) | Gateway | ICMP (ping) | ✅ Allowed (reply) | ✅ Allowed (reply) |
 | Node (`192.168.76.82`) | Internet (any) | Any (HTTP, DNS, …) | ✅ Allowed (outbound) | ✅ Allowed (outbound) |
 | Relay (`192.168.76.2`) | Gateway | DHCP (UDP/67) | ✅ Allowed (lease) | ✅ Allowed (lease) |
@@ -705,8 +699,8 @@ traceroute -n 1.1.1.1
 ### From the K1001 PC (Host)
 Run these commands on the **host** machine (or another VM on the same Host‑Only network):
 ```bash
-ping 192.168.56.101          # Should time out (replace with Gateway's Host‑Only IP)
-ssh administrator@192.168.56.101   # Should succeed (password prompt)
+ping 10.0.x.x          # Should time out (replace with Gateway's Bridged Adapter)
+ssh administrator@10.0.x.x   # Should succeed (password prompt)
 ```
 
 **How to verify on Windows:**
